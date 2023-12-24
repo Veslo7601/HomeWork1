@@ -23,7 +23,7 @@ def scan_and_move_and_rename(target_folder,default_folder):
         if elem.is_dir() and elem.name not in ["archives", "video", "audio", "documents", "images", "others"]:
             scan_and_move_and_rename(elem,default_folder)
         else:
-            if not elem.is_dir():
+            if elem.is_file():
                 elem_suffix = elem.suffix[1:].upper() 
                 if elem_suffix in ('JPEG', 'PNG', 'JPG', 'SVG'): 
                     print(elem)
@@ -55,7 +55,7 @@ def scan_and_move_and_rename(target_folder,default_folder):
                     shutil.move(old_path, new_path/new_name)
                     Known_extensions.append(elem_suffix)
 
-                elif elem_suffix in ('JMP3', 'OGG', 'WAV', 'AMR'):
+                elif elem_suffix in ('MP3', 'OGG', 'WAV', 'AMR'):
                     print(elem)
                     new_name = normalize.normalize(elem.name)
                     name_folder = "audio"
@@ -103,16 +103,30 @@ def delete_folder(target_folder):
             except:
                 "Error delet folder"
 
+# Друк назв файлів у папці
+                
+def print_result(target_folder):
+    dir_path = Path(target_folder)
+    if dir_path.is_dir():
+        print(f"Folder name - {dir_path.name}, name file:")
+        for elem in dir_path.iterdir():
+            print(elem.name)
 
 
-print(Path("Temp"))
 if len(sys.argv) != 2:
     print("Not enough parameters")
     quit()
+    
 target_folder = sys.argv[1]
+#target_folder = "Temp"
+
 
 scan_and_move_and_rename(target_folder,target_folder)
 delete_folder(target_folder)
+
+for name in ["archives", "video", "audio", "documents", "images", "others"]:
+    new = target_folder+"/"+name
+    print_result(new)
 
 print(f"Know extensiond: {Known_extensions}")
 print(f"Unknow extensiond: {Unknown_extensions}")
